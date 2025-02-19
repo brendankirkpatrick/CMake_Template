@@ -110,12 +110,6 @@ macro(enable_clang_tidy target WARNINGS_AS_ERRORS)
 endmacro()
 enable_clang_tidy(options ${WARNINGS_AS_ERRORS})
 
-# Get all project files
-file(GLOB_RECURSE
-     ALL_CXX_SOURCE_FILES
-     *.[chi]pp *.[chi]xx *.cc *.hh *.ii *.[CHI]
-     )
-
 # Makes output colorful
 add_compile_options(-fdiagnostics-color=always)
 
