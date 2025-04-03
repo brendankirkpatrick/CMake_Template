@@ -5,7 +5,7 @@ if (NOT DEFINED CMAKE_CXX_STANDARD)
 endif()
 
 project(
-  AES
+  PROJ_NAME
   VERSION 1.0.0
   DESCRIPTION "AES Project for Network Security"
   LANGUAGES CXX C
@@ -28,7 +28,7 @@ PROPERTY STRINGS
          "RelWithDebInfo")
 
 # Create target for compiler options
-add_library(aes_warnings INTERFACE)
+add_library(${PROJECT_NAME} INTERFACE)
 
 set(CLANG_WARNINGS
     -Wall
@@ -65,13 +65,74 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif()
 
 target_compile_options(
-    aes_warnings
+    ${PROJECT_NAME}
     INTERFACE 
     # C++ warnings
     $<$<COMPILE_LANGUAGE:CXX>:${PROJECT_WARNINGS_CXX}>
 )
 
 option(WARNINGS_AS_ERRORS "Treat Warnings As Errors" ON)
+
+# sanitizer options
+option(myproject_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" OFF)
+option(myproject_ENABLE_SANITIZER_LEAK "Enable leak sanitizer" OFF)
+option(myproject_ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" OFF)
+option(myproject_ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
+option(myproject_ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
+
+# enable sanitizers
+set(SANITIZERS "")
+if(${ENABLE_SANITIZER_ADDRESS})
+  list(APPEND SANITIZERS "address")
+endif()
+
+if(${ENABLE_SANITIZER_LEAK})
+  list(APPEND SANITIZERS "leak")
+endif()
+
+if(${ENABLE_SANITIZER_UNDEFINED_BEHAVIOR})
+  list(APPEND SANITIZERS "undefined")
+endif()
+
+if(${ENABLE_SANITIZER_THREAD})
+  if("address" IN_LIST SANITIZERS OR "leak" IN_LIST SANITIZERS)
+    message(WARNING "Thread sanitizer does not work with Address and Leak sanitizer enabled")
+  else()
+    list(APPEND SANITIZERS "thread")
+  endif()
+endif()
+
+if(${ENABLE_SANITIZER_MEMORY} AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+  message(
+    WARNING
+      "Memory sanitizer requires all the code (including libc++) to be MSan-instrumented otherwise it reports false positives"
+  )
+  if("address" IN_LIST SANITIZERS
+     OR "thread" IN_LIST SANITIZERS
+     OR "leak" IN_LIST SANITIZERS)
+    message(WARNING "Memory sanitizer does not work with Address, Thread or Leak sanitizer enabled")
+  else()
+    list(APPEND SANITIZERS "memory")
+  endif()
+endif()
+
+list( JOIN
+      SANITIZERS
+      ","
+      LIST_OF_SANITIZERS)
+
+if(LIST_OF_SANITIZERS)
+    if(NOT
+       "${LIST_OF_SANITIZERS}"
+       STREQUAL
+       "")
+# apparently MSVC is weird so just disable for now
+        if(NOT MSVC)
+            target_compile_options(${PROJECT_NAME} INTERFACE -fsanitize=${LIST_OF_SANITIZERS})
+            target_link_options(${PROJECT_NAME} INTERFACE -fsanitize=${LIST_OF_SANITIZERS})
+        endif()
+    endif()
+endif()
 
 # enable clang tidy macro
 macro(enable_clang_tidy target WARNINGS_AS_ERRORS)
