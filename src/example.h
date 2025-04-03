@@ -1,3 +1,4 @@
 #pragma once
 
-unsigned int Factorial( unsigned int number );
+int Factorial(int number);
+int Square(int number);

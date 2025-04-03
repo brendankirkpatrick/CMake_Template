@@ -1,29 +1,55 @@
 ---
-Checks: "*,
-        -abseil-*,
-        -altera-*,
-        -android-*,
-        -fuchsia-*,
-        -google-*,
-        -llvm*,
-        -modernize-use-trailing-return-type,
-        -zircon-*,
-        -readability-else-after-return,
-        -readability-static-accessed-through-instance,
-        -readability-avoid-const-params-in-decls,
-        -cppcoreguidelines-non-private-member-variables-in-classes,
-        -misc-non-private-member-variables-in-classes,
+Checks: "
+    -*,
+    bugprone-*,
+
+    cert-*,
+    -cert-err58-cpp,
+
+    clang-diagnostic-*,
+    clang-analyzer-*,
+
+    concurrency-*,
+
+    google-*,
+    -google-readability-braces-around-statements,
+    -google-readability-namespace-comments,
+    -google-readability-todo
+
+    misc-*,
+    -misc-no-recursion,
+    -misc-non-private-member-variables-in-classes,
+
+    performance-*,
+    -performance-move-const-arg,
+    -performance-avoid-endl,
+    -performance-enum-size,
+
+    portability-*,
+
+    readability-*,
+    -readability-redundant-declaration,
+    -readability-avoid-return-with-void-value,
+    -readability-function-cognitive-complexity,
+
+# CPP SPECIFIC CHECKS
+    cppcoreguidelines-*, 
+
+    modernize-*,
+    -modernize-return-braced-init-list,
+    -modernize-use-using,
+    -modernize-use-trailing-return-type,
+
+    hicpp-*,
 "
-WarningsAsErrors: ''
-HeaderFilterRegex: ''
-FormatStyle:     none
-UseColor:        true 
+
+FormatStyle:     'file'
 
 CheckOptions:
   - key: readability-identifier-length.IgnoredVariableNames
-    value: 'x|y|z'
+    value: 'x|y|z|i|j|k'
   - key: readability-identifier-length.IgnoredParameterNames
-    value: 'x|y|z'
+    value: 'x|y|z|i|j|k'
 
 
 
