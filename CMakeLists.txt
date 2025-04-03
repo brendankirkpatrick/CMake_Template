@@ -7,7 +7,7 @@ endif()
 project(
   PROJ_NAME
   VERSION 1.0.0
-  DESCRIPTION "AES Project for Network Security"
+  DESCRIPTION "Insert Description"
   LANGUAGES CXX C
   )
 
@@ -28,7 +28,7 @@ PROPERTY STRINGS
          "RelWithDebInfo")
 
 # Create target for compiler options
-add_library(${PROJECT_NAME} INTERFACE)
+add_library(${PROJECT_NAME}_settings INTERFACE)
 
 set(CLANG_WARNINGS
     -Wall
@@ -65,7 +65,7 @@ elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 endif()
 
 target_compile_options(
-    ${PROJECT_NAME}
+    ${PROJECT_NAME}_settings
     INTERFACE 
     # C++ warnings
     $<$<COMPILE_LANGUAGE:CXX>:${PROJECT_WARNINGS_CXX}>
@@ -74,11 +74,11 @@ target_compile_options(
 option(WARNINGS_AS_ERRORS "Treat Warnings As Errors" ON)
 
 # sanitizer options
-option(myproject_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" OFF)
-option(myproject_ENABLE_SANITIZER_LEAK "Enable leak sanitizer" OFF)
-option(myproject_ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" OFF)
-option(myproject_ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
-option(myproject_ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
+option(ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" OFF)
+option(ENABLE_SANITIZER_LEAK "Enable leak sanitizer" OFF)
+option(ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" OFF)
+option(ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
+option(ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
 
 # enable sanitizers
 set(SANITIZERS "")
@@ -128,8 +128,8 @@ if(LIST_OF_SANITIZERS)
        "")
 # apparently MSVC is weird so just disable for now
         if(NOT MSVC)
-            target_compile_options(${PROJECT_NAME} INTERFACE -fsanitize=${LIST_OF_SANITIZERS})
-            target_link_options(${PROJECT_NAME} INTERFACE -fsanitize=${LIST_OF_SANITIZERS})
+            target_compile_options(${PROJECT_NAME}_settings INTERFACE -fsanitize=${LIST_OF_SANITIZERS})
+            target_link_options(${PROJECT_NAME}_settings INTERFACE -fsanitize=${LIST_OF_SANITIZERS})
         endif()
     endif()
 endif()
@@ -181,4 +181,10 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # Add our src folder to build
 add_subdirectory(src)
+
+# Enable tests
+enable_testing()
 add_subdirectory(test)
+add_test(NAME UNIT_TEST COMMAND UNIT_TEST_EXE_NAME)
+set_tests_properties(UNIT_TEST PROPERTIES TIMEOUT 30) 
+
