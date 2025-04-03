@@ -1,5 +1,15 @@
 cmake_minimum_required(VERSION 3.21)
 
+# Treat warnings as errors
+option(WARNINGS_AS_ERRORS "Treat Warnings As Errors" ON)
+
+# Sanitizer options
+option(ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" ON)
+option(ENABLE_SANITIZER_LEAK "Enable leak sanitizer" ON)
+option(ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" ON)
+option(ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
+option(ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
+
 if (NOT DEFINED CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 20)
 endif()
@@ -71,16 +81,7 @@ target_compile_options(
     $<$<COMPILE_LANGUAGE:CXX>:${PROJECT_WARNINGS_CXX}>
 )
 
-option(WARNINGS_AS_ERRORS "Treat Warnings As Errors" ON)
-
-# sanitizer options
-option(ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" OFF)
-option(ENABLE_SANITIZER_LEAK "Enable leak sanitizer" OFF)
-option(ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" OFF)
-option(ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
-option(ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
-
-# enable sanitizers
+# Enable sanitizers
 set(SANITIZERS "")
 if(${ENABLE_SANITIZER_ADDRESS})
   list(APPEND SANITIZERS "address")
@@ -126,7 +127,7 @@ if(LIST_OF_SANITIZERS)
        "${LIST_OF_SANITIZERS}"
        STREQUAL
        "")
-# apparently MSVC is weird so just disable for now
+# Apparently MSVC is weird so just disable for now
         if(NOT MSVC)
             target_compile_options(${PROJECT_NAME}_settings INTERFACE -fsanitize=${LIST_OF_SANITIZERS})
             target_link_options(${PROJECT_NAME}_settings INTERFACE -fsanitize=${LIST_OF_SANITIZERS})
@@ -134,11 +135,11 @@ if(LIST_OF_SANITIZERS)
     endif()
 endif()
 
-# enable clang tidy macro
+# Enable clang tidy macro
 macro(enable_clang_tidy target WARNINGS_AS_ERRORS)
   find_program(CLANGTIDY clang-tidy)
   if(CLANGTIDY)
-    # construct the clang-tidy command line
+    # Construct the clang-tidy command line
     set(CLANG_TIDY_OPTIONS
         ${CLANGTIDY}
         -extra-arg=-Wno-unknown-warning-option
@@ -146,7 +147,7 @@ macro(enable_clang_tidy target WARNINGS_AS_ERRORS)
         -extra-arg=-Wno-unused-command-line-argument
         -p
         -fix)
-    # set standard
+    # Set standard
     if(NOT
        "${CMAKE_CXX_STANDARD}"
        STREQUAL
@@ -158,7 +159,7 @@ macro(enable_clang_tidy target WARNINGS_AS_ERRORS)
       endif()
     endif()
 
-    # set warnings as errors
+    # Set warnings as errors
     if(${WARNINGS_AS_ERRORS})
       list(APPEND CLANG_TIDY_OPTIONS -warnings-as-errors=*)
     endif()
@@ -182,6 +183,23 @@ add_subdirectory(src)
 # Enable tests
 enable_testing()
 add_subdirectory(test)
+
+if("${LIST_OF_SANITIZERS}"
+    STREQUAL
+    "")
+    find_program(VALGRIND valgrind)
+    if(VALGRIND)
+        add_test(NAME MEMCHECK_TEST
+                COMMAND valgrind
+                  --error-exitcode=1
+                  --tool=memcheck
+                  --leak-check=full
+                  --errors-for-leak-kinds=definite
+                  --show-leak-kinds=definite $<TARGET_FILE:UNIT_TEST>
+                WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
+    endif()
+endif()
+
 add_test(NAME UNIT_TEST COMMAND UNIT_TEST)
 set_tests_properties(UNIT_TEST PROPERTIES TIMEOUT 30) 
 

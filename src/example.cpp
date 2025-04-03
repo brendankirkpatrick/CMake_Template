@@ -1,6 +1,5 @@
-#include <iostream>
+#include <example.h>
 
-void func()
-{
-    std::cout << "example" << std::endl;
+unsigned int Factorial( unsigned int number ) {
+    return number <= 1 ? number : Factorial(number-1)*number;
 }

@@ -1,5 +1,6 @@
-# Custom
+# CMake build artifacts
 build/
+UNIT_TEST
 
 # Prerequisites
 *.d

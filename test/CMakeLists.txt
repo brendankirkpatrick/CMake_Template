@@ -12,7 +12,7 @@ Include(FetchContent)
 FetchContent_Declare(
   Catch2
   GIT_REPOSITORY https://github.com/catchorg/Catch2.git
-  GIT_TAG        v3.4.0 # or a later release
+  GIT_TAG        v3.8.0 # or a later release
 )
 foreach (lang IN ITEMS C CXX)
   set("CMAKE_${lang}_CLANG_TIDY_save" "${CMAKE_${lang}_CLANG_TIDY}")
@@ -24,7 +24,6 @@ foreach (lang IN ITEMS C CXX)
 endforeach ()
 
 add_executable(UNIT_TEST ${SOURCE_FILES} ${HEADER_FILES})
-target_include_directories(UNIT_TEST PUBLIC ${PROJECT_SOURCE_DIR}/src)
 
 target_link_libraries(
     UNIT_TEST

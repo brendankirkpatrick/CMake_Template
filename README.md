@@ -1,7 +1,8 @@
 # CMake_Template
 This project is a simple CMake template that features:
 
-- Compiler Warnings
-- Address sanitization
-- Clang Tidy static analysis
-- Basic unit testing with Catch2
+- compiler warnings (optionally treated as errors)
+- sanitization options (address, memory, etc...)
+- clang-tidy static analysis
+- basic unit testing with [Catch2](https://github.com/catchorg/Catch2)
+- Valgrind integration (when sanitization disabled)
