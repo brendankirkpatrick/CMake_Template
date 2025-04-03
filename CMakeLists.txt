@@ -171,12 +171,9 @@ macro(enable_clang_tidy target WARNINGS_AS_ERRORS)
 endmacro()
 enable_clang_tidy(options ${WARNINGS_AS_ERRORS})
 
-# Makes output colorful
-add_compile_options(-fdiagnostics-color=always)
-
 # Set output directory
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BUILD_DIRECTORY})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BUILD_DIRECTORY})
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 
 # Add our src folder to build
@@ -185,6 +182,6 @@ add_subdirectory(src)
 # Enable tests
 enable_testing()
 add_subdirectory(test)
-add_test(NAME UNIT_TEST COMMAND UNIT_TEST_EXE_NAME)
+add_test(NAME UNIT_TEST COMMAND UNIT_TEST)
 set_tests_properties(UNIT_TEST PROPERTIES TIMEOUT 30) 
 

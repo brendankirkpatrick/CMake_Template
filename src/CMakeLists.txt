@@ -4,6 +4,7 @@ set(HEADER_FILES
 
 # Source Files
 set(SOURCE_FILES
+    example.cpp
     )
 
 # Program entry (main fn)
