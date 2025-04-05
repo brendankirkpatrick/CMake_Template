@@ -14,15 +14,28 @@ set(PROGRAM_ENTRY
     )
 
 # Add source files as library 
-add_library(src_files ${SOURCE_FILES} ${HEADER_FILES})
-set_target_properties(src_files 
-                      PROPERTIES LINKER_LANGUAGE CXX 
-                      OUTPUT_NAME ${PROJECT_NAME})
-target_include_directories(src_files PUBLIC ${PROJECT_SOURCE_DIR}/src)
+if(SOURCE_FILES OR HEADER_FILES)
+    add_library(src_files ${SOURCE_FILES} ${HEADER_FILES})
+    set_target_properties(src_files 
+                          PROPERTIES 
+                          LINKER_LANGUAGE CXX 
+                          OUTPUT_NAME ${PROJECT_NAME}
+                          )
+    target_include_directories(src_files PUBLIC ${PROJECT_SOURCE_DIR}/src)
+    if(NOT PROGRAM_ENTRY)
+        target_link_libraries(
+            src_files
+            PRIVATE ${PROJECT_NAME}_settings
+            )
+    endif()
+endif()
 
-add_executable(${PROJECT_NAME} ${PROGRAM_ENTRY})
-target_link_libraries(
-    ${PROJECT_NAME}
-    PRIVATE ${PROJECT_NAME}_settings
-    PUBLIC src_files
-)
+if(PROGRAM_ENTRY)
+    # Add executable
+    add_executable(${PROJECT_NAME} ${PROGRAM_ENTRY})
+    target_link_libraries(
+        ${PROJECT_NAME}
+        PRIVATE ${PROJECT_NAME}_settings
+        PUBLIC src_files
+        )
+endif()
