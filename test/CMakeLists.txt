@@ -25,12 +25,20 @@ endforeach ()
 
 add_executable(UNIT_TEST ${SOURCE_FILES} ${HEADER_FILES})
 
-# Set UNIT_TEST output directory
+# Unit test output bin in build directory
 set_target_properties(UNIT_TEST PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-target_link_libraries(
-    UNIT_TEST
-    PRIVATE ${PROJECT_NAME}_settings
-    PRIVATE Catch2::Catch2WithMain
-    PUBLIC src_files
-)
+if(TARGET src_files)
+    target_link_libraries(
+        UNIT_TEST
+        PRIVATE ${PROJECT_NAME}_settings
+        PRIVATE Catch2::Catch2WithMain
+        PUBLIC src_files
+    )
+else()
+    target_link_libraries(
+        UNIT_TEST
+        PRIVATE ${PROJECT_NAME}_settings
+        PRIVATE Catch2::Catch2WithMain
+    )
+endif()
