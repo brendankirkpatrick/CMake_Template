@@ -20,9 +20,9 @@ set_target_properties(src_files
                       OUTPUT_NAME ${PROJECT_NAME})
 target_include_directories(src_files PUBLIC ${PROJECT_SOURCE_DIR}/src)
 
-add_executable(EXE_NAME ${PROGRAM_ENTRY})
+add_executable(${PROJECT_NAME} ${PROGRAM_ENTRY})
 target_link_libraries(
-    EXE_NAME
+    ${PROJECT_NAME}
     PRIVATE ${PROJECT_NAME}_settings
     PUBLIC src_files
 )
