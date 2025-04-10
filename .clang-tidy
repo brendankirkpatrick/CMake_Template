@@ -31,6 +31,7 @@ Checks: "
     -readability-redundant-declaration,
     -readability-avoid-return-with-void-value,
     -readability-function-cognitive-complexity,
+    -readability-uppercase-literal-suffix,
 
 # CPP SPECIFIC CHECKS
     cppcoreguidelines-*, 
@@ -41,6 +42,7 @@ Checks: "
     -modernize-use-trailing-return-type,
 
     hicpp-*,
+    -hicpp-uppercase-literal-suffix,
 "
 
 FormatStyle:     'file'

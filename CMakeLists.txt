@@ -169,9 +169,9 @@ macro(enable_clang_tidy target WARNINGS_AS_ERRORS)
     # Construct the clang-tidy command line
     set(CLANG_TIDY_OPTIONS
         ${CLANGTIDY}
-        --fix
-        --fix-notes
-        --fix-errors
+        #--fix
+        #--fix-notes
+        #--fix-errors
         --quiet
         --use-color
         --extra-arg=-Wno-unknown-warning-option
