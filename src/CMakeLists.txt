@@ -16,24 +16,23 @@ set(PROGRAM_ENTRY
 if(PROGRAM_ENTRY)
     # Add executable
     add_executable(${PROJECT_NAME} ${PROGRAM_ENTRY})
-    target_link_libraries(
-        ${PROJECT_NAME}
-        PRIVATE ${PROJECT_NAME}_settings
-        )
 endif()
 
-# Add source files as library 
+# Add source files as library
 if(SOURCE_FILES OR HEADER_FILES)
-    add_library(src_files ${SOURCE_FILES} ${HEADER_FILES})
-    set_target_properties(src_files 
-                          PROPERTIES 
-                          LINKER_LANGUAGE CXX 
-                          OUTPUT_NAME ${PROJECT_NAME}
+    add_library(${PROJECT_NAME}_lib ${SOURCE_FILES} ${HEADER_FILES})
+    set_target_properties(${PROJECT_NAME}_lib
+                          PROPERTIES
+                          LINKER_LANGUAGE CXX
+                          OUTPUT_NAME ${PROJECT_NAME}_lib
                           )
-    target_include_directories(src_files PUBLIC ${PROJECT_SOURCE_DIR}/src)
+    target_include_directories(${PROJECT_NAME}_lib PUBLIC ${PROJECT_SOURCE_DIR}/src)
     target_link_libraries(
         ${PROJECT_NAME}
-        PRIVATE ${PROJECT_NAME}_settings
-        PUBLIC src_files
+        PRIVATE ${PROJECT_NAME}_lib
         )
 endif()
+target_link_libraries(
+    ${PROJECT_NAME}
+    INTERFACE ${PROJECT_NAME}_settings
+    )

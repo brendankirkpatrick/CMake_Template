@@ -7,7 +7,7 @@ set(SOURCE_FILES
     test.cpp
     )
 
-# Fetch Content to include Catch2 testing 
+# Fetch Content to include Catch2 testing
 Include(FetchContent)
 FetchContent_Declare(
   Catch2
@@ -15,12 +15,12 @@ FetchContent_Declare(
   GIT_TAG        v3.8.0 # or a later release
 )
 foreach (lang IN ITEMS C CXX)
-  set("CMAKE_${lang}_CLANG_TIDY_save" "${CMAKE_${lang}_CLANG_TIDY}")
-  set("CMAKE_${lang}_CLANG_TIDY" "")
+    set("CMAKE_${lang}_CLANG_TIDY_save" "${CMAKE_${lang}_CLANG_TIDY}")
+    set("CMAKE_${lang}_CLANG_TIDY" "")
 endforeach ()
 FetchContent_MakeAvailable(Catch2)
 foreach (lang IN ITEMS C CXX)
-  set("CMAKE_${lang}_CLANG_TIDY" "${CMAKE_${lang}_CLANG_TIDY_save}")
+    set("CMAKE_${lang}_CLANG_TIDY" "${CMAKE_${lang}_CLANG_TIDY_save}")
 endforeach ()
 
 add_executable(UNIT_TEST ${SOURCE_FILES} ${HEADER_FILES})
@@ -28,17 +28,17 @@ add_executable(UNIT_TEST ${SOURCE_FILES} ${HEADER_FILES})
 # Unit test output bin in build directory
 set_target_properties(UNIT_TEST PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-if(TARGET src_files)
+if(TARGET ${PROJECT_NAME}_lib)
     target_link_libraries(
         UNIT_TEST
-        PRIVATE ${PROJECT_NAME}_settings
+        INTERFACE ${PROJECT_NAME}_settings
         PRIVATE Catch2::Catch2WithMain
-        PUBLIC src_files
+        ${PROJECT_NAME}_lib
     )
 else()
     target_link_libraries(
         UNIT_TEST
-        PRIVATE ${PROJECT_NAME}_settings
+        INTERFACE ${PROJECT_NAME}_settings
         PRIVATE Catch2::Catch2WithMain
     )
 endif()
