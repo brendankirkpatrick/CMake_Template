@@ -2,9 +2,9 @@
 
 int main()
 {
-  std::cout << "test" << std::endl;
+    std::cout << "test" << std::endl;
 
-  int x = 0;
+    const int x = 0;
 
-  return x;
+    return x;
 }
