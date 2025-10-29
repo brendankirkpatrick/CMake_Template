@@ -1,5 +1,6 @@
 # CMake build artifacts
 build/
+.cache/
 UNIT_TEST
 
 # Prerequisites

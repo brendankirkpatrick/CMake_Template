@@ -18,6 +18,7 @@ Checks: "
 
     misc-*,
     -misc-no-recursion,
+    -misc-use-anonymous-namespace,
     -misc-non-private-member-variables-in-classes,
 
     performance-*,
