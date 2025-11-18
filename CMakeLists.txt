@@ -93,7 +93,7 @@ endif()
 
 target_compile_options(
     ${PROJECT_NAME}_settings
-    INTERFACE 
+    INTERFACE
     # C++ warnings
     $<$<COMPILE_LANGUAGE:CXX>:${PROJECT_WARNINGS_CXX}>
     # C warnings
@@ -103,7 +103,7 @@ target_compile_options(
 if(${WARNINGS_AS_ERRORS})
     target_compile_options(
         ${PROJECT_NAME}_settings
-        INTERFACE 
+        INTERFACE
         -Werror
     )
 endif()
@@ -111,37 +111,37 @@ endif()
 # Enable sanitizers
 set(SANITIZERS "")
 if(${ENABLE_SANITIZER_ADDRESS})
-  list(APPEND SANITIZERS "address")
+    list(APPEND SANITIZERS "address")
 endif()
 
 if(${ENABLE_SANITIZER_LEAK})
-  list(APPEND SANITIZERS "leak")
+    list(APPEND SANITIZERS "leak")
 endif()
 
 if(${ENABLE_SANITIZER_UNDEFINED_BEHAVIOR})
-  list(APPEND SANITIZERS "undefined")
+    list(APPEND SANITIZERS "undefined")
 endif()
 
 if(${ENABLE_SANITIZER_THREAD})
-  if("address" IN_LIST SANITIZERS OR "leak" IN_LIST SANITIZERS)
-    message(WARNING "Thread sanitizer does not work with Address and Leak sanitizer enabled")
-  else()
-    list(APPEND SANITIZERS "thread")
-  endif()
+    if("address" IN_LIST SANITIZERS OR "leak" IN_LIST SANITIZERS)
+        message(WARNING "Thread sanitizer does not work with Address and Leak sanitizer enabled")
+    else()
+        list(APPEND SANITIZERS "thread")
+    endif()
 endif()
 
 if(${ENABLE_SANITIZER_MEMORY} AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
-  message(
+    message(
     WARNING
       "Memory sanitizer requires all the code (including libc++) to be MSan-instrumented otherwise it reports false positives"
   )
-  if("address" IN_LIST SANITIZERS
+    if("address" IN_LIST SANITIZERS
      OR "thread" IN_LIST SANITIZERS
      OR "leak" IN_LIST SANITIZERS)
-    message(WARNING "Memory sanitizer does not work with Address, Thread or Leak sanitizer enabled")
-  else()
-    list(APPEND SANITIZERS "memory")
-  endif()
+        message(WARNING "Memory sanitizer does not work with Address, Thread or Leak sanitizer enabled")
+    else()
+        list(APPEND SANITIZERS "memory")
+    endif()
 endif()
 
 list( JOIN
@@ -154,7 +154,7 @@ if(LIST_OF_SANITIZERS)
        "${LIST_OF_SANITIZERS}"
        STREQUAL
        "")
-# Apparently MSVC is weird so just disable for now
+        # Apparently MSVC is weird so just disable for now
         if(NOT MSVC)
             target_compile_options(${PROJECT_NAME}_settings INTERFACE -fsanitize=${LIST_OF_SANITIZERS})
             target_link_options(${PROJECT_NAME}_settings INTERFACE -fsanitize=${LIST_OF_SANITIZERS})
@@ -164,10 +164,10 @@ endif()
 
 # Enable clang tidy macro
 macro(enable_clang_tidy target WARNINGS_AS_ERRORS)
-  find_program(CLANGTIDY clang-tidy)
-  if(CLANGTIDY)
-    # Construct the clang-tidy command line
-    set(CLANG_TIDY_OPTIONS
+    find_program(CLANGTIDY clang-tidy)
+    if(CLANGTIDY)
+        # Construct the clang-tidy command line
+        set(CLANG_TIDY_OPTIONS
         ${CLANGTIDY}
         #--fix
         #--fix-notes
@@ -177,29 +177,41 @@ macro(enable_clang_tidy target WARNINGS_AS_ERRORS)
         --extra-arg=-Wno-unknown-warning-option
         --extra-arg=-Wno-ignored-optimization-argument
         --extra-arg=-Wno-unused-command-line-argument
-       ) 
-    # Set standard
-    if(NOT
+       )
+        # Set warnings as errors
+        if(${WARNINGS_AS_ERRORS})
+            list(APPEND CLANG_TIDY_OPTIONS -warnings-as-errors=*)
+        endif()
+
+        # Set standard
+        if(NOT
        "${CMAKE_CXX_STANDARD}"
        STREQUAL
        "")
-      if("${CLANG_TIDY_OPTIONS_DRIVER_MODE}" STREQUAL "cl")
-        set(CLANG_TIDY_OPTIONS ${CLANG_TIDY_OPTIONS} -extra-arg=/std:c++${CMAKE_CXX_STANDARD})
-      else()
-        set(CLANG_TIDY_OPTIONS ${CLANG_TIDY_OPTIONS} -extra-arg=-std=c++${CMAKE_CXX_STANDARD})
-      endif()
-    endif()
+            if("${CLANG_TIDY_OPTIONS_DRIVER_MODE}" STREQUAL "cl")
+                set(CLANG_TIDY_OPTIONS ${CLANG_TIDY_OPTIONS} -extra-arg=/std:c++${CMAKE_CXX_STANDARD})
+            else()
+                set(CLANG_TIDY_OPTIONS ${CLANG_TIDY_OPTIONS} -extra-arg=-std=c++${CMAKE_CXX_STANDARD})
+            endif()
+            set_property(TARGET ${PROJECT_NAME}_settings PROPERTY CXX_CLANG_TIDY ${CLANG_TIDY_OPTIONS})
+        endif()
 
-    # Set warnings as errors
-    if(${WARNINGS_AS_ERRORS})
-      list(APPEND CLANG_TIDY_OPTIONS -warnings-as-errors=*)
-    endif()
+        if(NOT
+       "${CMAKE_C_STANDARD}"
+       STREQUAL
+       "")
+            if("${CLANG_TIDY_OPTIONS_DRIVER_MODE}" STREQUAL "cl")
+                set(CLANG_TIDY_OPTIONS ${CLANG_TIDY_OPTIONS} -extra-arg=/std:c${CMAKE_C_STANDARD})
+            else()
+                set(CLANG_TIDY_OPTIONS ${CLANG_TIDY_OPTIONS} -extra-arg=-std=c${CMAKE_C_STANDARD})
+            endif()
+            set_property(TARGET ${PROJECT_NAME}_settings PROPERTY C_CLANG_TIDY ${CLANG_TIDY_OPTIONS})
+        endif()
 
-    message("Also setting clang-tidy globally")
-    set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_OPTIONS})
-  else()
-    message(${WARNING_MESSAGE} "clang-tidy requested but executable not found")
-  endif()
+        message("Setting clang-tidy globally (for project)")
+    else()
+        message(${WARNING_MESSAGE} "clang-tidy requested but executable not found")
+    endif()
 endmacro()
 enable_clang_tidy(options ${WARNINGS_AS_ERRORS})
 
@@ -232,5 +244,5 @@ if("${LIST_OF_SANITIZERS}"
 endif()
 
 add_test(NAME UNIT_TEST COMMAND UNIT_TEST)
-set_tests_properties(UNIT_TEST PROPERTIES TIMEOUT 30) 
+set_tests_properties(UNIT_TEST PROPERTIES TIMEOUT 30)
 

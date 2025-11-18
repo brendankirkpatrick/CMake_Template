@@ -14,14 +14,7 @@ FetchContent_Declare(
   GIT_REPOSITORY https://github.com/catchorg/Catch2.git
   GIT_TAG        v3.8.0 # or a later release
 )
-foreach (lang IN ITEMS C CXX)
-    set("CMAKE_${lang}_CLANG_TIDY_save" "${CMAKE_${lang}_CLANG_TIDY}")
-    set("CMAKE_${lang}_CLANG_TIDY" "")
-endforeach ()
 FetchContent_MakeAvailable(Catch2)
-foreach (lang IN ITEMS C CXX)
-    set("CMAKE_${lang}_CLANG_TIDY" "${CMAKE_${lang}_CLANG_TIDY_save}")
-endforeach ()
 
 add_executable(UNIT_TEST ${SOURCE_FILES} ${HEADER_FILES})
 
