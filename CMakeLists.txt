@@ -224,7 +224,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR})
 add_subdirectory(src)
 
 # Enable tests
-enable_testing()
+include(CTest)
 add_subdirectory(test)
 
 if("${LIST_OF_SANITIZERS}"
@@ -243,6 +243,6 @@ if("${LIST_OF_SANITIZERS}"
     endif()
 endif()
 
-add_test(NAME UNIT_TEST COMMAND UNIT_TEST)
+add_test(NAME UNIT_TEST COMMAND UNIT_TEST --colour-mode ansi)
 set_tests_properties(UNIT_TEST PROPERTIES TIMEOUT 30)
 

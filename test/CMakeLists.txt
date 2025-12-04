@@ -18,6 +18,10 @@ FetchContent_MakeAvailable(Catch2)
 
 add_executable(UNIT_TEST ${SOURCE_FILES} ${HEADER_FILES})
 
+# Discover unit tests automagically
+include(Catch)
+catch_discover_tests(UNIT_TEST EXTRA_ARGS --colour-mode ansi)
+
 # Unit test output bin in build directory
 set_target_properties(UNIT_TEST PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
