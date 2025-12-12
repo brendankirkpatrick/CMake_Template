@@ -34,5 +34,5 @@ if(SOURCE_FILES OR HEADER_FILES)
 endif()
 target_link_libraries(
     ${PROJECT_NAME}
-    INTERFACE ${PROJECT_NAME}_settings
+    PRIVATE ${PROJECT_NAME}_settings
     )

@@ -28,14 +28,14 @@ set_target_properties(UNIT_TEST PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURR
 if(TARGET ${PROJECT_NAME}_lib)
     target_link_libraries(
         UNIT_TEST
-        INTERFACE ${PROJECT_NAME}_settings
-        PRIVATE Catch2::Catch2WithMain
+        PRIVATE ${PROJECT_NAME}_settings
+        Catch2::Catch2WithMain
         ${PROJECT_NAME}_lib
     )
 else()
     target_link_libraries(
         UNIT_TEST
-        INTERFACE ${PROJECT_NAME}_settings
-        PRIVATE Catch2::Catch2WithMain
+        PRIVATE ${PROJECT_NAME}_settings
+        Catch2::Catch2WithMain
     )
 endif()
