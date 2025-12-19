@@ -25,17 +25,23 @@ catch_discover_tests(UNIT_TEST EXTRA_ARGS --colour-mode ansi)
 # Unit test output bin in build directory
 set_target_properties(UNIT_TEST PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
-if(TARGET ${PROJECT_NAME}_lib)
-    target_link_libraries(
-        UNIT_TEST
-        PRIVATE ${PROJECT_NAME}_settings
-        Catch2::Catch2WithMain
-        ${PROJECT_NAME}_lib
-    )
+if(TARGET ${PROJECT_NAME})
+    get_target_property(TYPE_VAR ${PROJECT_NAME} TYPE)
+    if(TYPE_VAR STREQUAL "EXECUTABLE")
+        target_link_libraries(
+            UNIT_TEST
+            PRIVATE ${PROJECT_NAME}_settings
+            Catch2::Catch2WithMain
+            ${PROJECT_NAME}_lib
+        )
+    else()
+        target_link_libraries(
+            UNIT_TEST
+            PRIVATE ${PROJECT_NAME}_settings
+            Catch2::Catch2WithMain
+            ${PROJECT_NAME}
+        )
+    endif()
 else()
-    target_link_libraries(
-        UNIT_TEST
-        PRIVATE ${PROJECT_NAME}_settings
-        Catch2::Catch2WithMain
-    )
+    message(FATAL_ERROR "${PROJECT_NAME} target not found...")
 endif()

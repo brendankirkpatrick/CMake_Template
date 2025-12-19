@@ -10,6 +10,31 @@ option(ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" ON)
 option(ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
 option(ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
 
+# Enable position independent code
+option(POSITION_INDEPENDENT_CODE "Treat Warnings As Errors" OFF)
+
+# Set the possible values of build type for cmake-gui, ccmake
+set(BUILD_ARTIFACT_TYPE
+    "Executable"
+    CACHE STRING "Choose the type of build.")
+set_property(
+    CACHE BUILD_ARTIFACT_TYPE
+    PROPERTY STRINGS
+     "Executable"
+     "Static"
+     "Shared")
+
+set(CMAKE_BUILD_TYPE
+      "Debug"
+      CACHE STRING "Choose the type of build.")
+set_property(
+    CACHE CMAKE_BUILD_TYPE
+    PROPERTY STRINGS
+     "Debug"
+     "Release"
+     "MinSizeRel"
+     "RelWithDebInfo")
+
 project(
   PROJ_NAME
   VERSION 1.0.0
@@ -19,19 +44,6 @@ project(
 
 # Generate compile_commands.json to make it easier to work with clang based tools
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-set(CMAKE_BUILD_TYPE
-      Debug
-      CACHE STRING "Choose the type of build." FORCE)
-
-# Set the possible values of build type for cmake-gui, ccmake
-set_property(
-CACHE CMAKE_BUILD_TYPE
-PROPERTY STRINGS
-         "Debug"
-         "Release"
-         "MinSizeRel"
-         "RelWithDebInfo")
 
 if (CMAKE_CXX_COMPILER_LOADED AND NOT DEFINED CMAKE_CXX_STANDARD)
     set(CMAKE_CXX_STANDARD 20)
