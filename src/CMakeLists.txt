@@ -14,6 +14,13 @@ set(MAIN main.cpp)
 # Set PCH if you have one
 set(PCH)
 
+# Set subdirectories to include. Allows files to directly include
+# headers without specifying the full subdirectory path
+set(INCLUDE_DIRS
+)
+
+################################################################################
+
 # Add source files as library
 if(SOURCE_FILES OR HEADER_FILES)
     add_library(${PROJECT_NAME}_lib OBJECT ${SOURCE_FILES} ${HEADER_FILES})
@@ -25,7 +32,9 @@ if(SOURCE_FILES OR HEADER_FILES)
         PRIVATE ${PROJECT_NAME}_settings
         )
 
-    target_include_directories(${PROJECT_NAME}_lib PUBLIC ${PROJECT_SOURCE_DIR}/src)
+    list(TRANSFORM INCLUDE_DIRS PREPEND "${PROJECT_SOURCE_DIR}/src/")
+    message("${INCLUDE_DIRS}")
+    target_include_directories(${PROJECT_NAME}_lib PUBLIC "${PROJECT_SOURCE_DIR}/src" ${INCLUDE_DIRS})
 else()
     message(FATAL_ERROR "Tried to create target without specifying any source or header files???")
 endif()
@@ -60,7 +69,7 @@ endif()
 
 # If we define a main fn for testing purposes, add our library to it
 if(MAIN AND (${BUILD_ARTIFACT_TYPE} STREQUAL "Static" OR ${BUILD_ARTIFACT_TYPE} STREQUAL "Shared"))
-    add_executable(${PROJECT_NAME}_verification_test ${MAIN})
+    add_executable(${PROJECT_NAME}_libtest ${MAIN})
     target_link_libraries(
         ${PROJECT_NAME}_libtest
         PRIVATE ${PROJECT_NAME}_settings
