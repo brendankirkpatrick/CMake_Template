@@ -22,7 +22,8 @@ set_property(
     PROPERTY STRINGS
      "Executable"
      "Static"
-     "Shared")
+     "Shared"
+     "Header-Only")
 
 set(CMAKE_BUILD_TYPE
       "Debug"

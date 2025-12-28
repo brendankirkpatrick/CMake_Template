@@ -22,7 +22,7 @@ set(INCLUDE_DIRS
 ################################################################################
 
 # Add source files as library
-if(SOURCE_FILES OR HEADER_FILES)
+if(SOURCE_FILES)
     add_library(${PROJECT_NAME}_lib OBJECT ${SOURCE_FILES} ${HEADER_FILES})
     if(PCH)
         target_precompile_headers(${PROJECT_NAME}_lib PUBLIC ${PCH})
@@ -35,6 +35,20 @@ if(SOURCE_FILES OR HEADER_FILES)
     list(TRANSFORM INCLUDE_DIRS PREPEND "${PROJECT_SOURCE_DIR}/src/")
     message("${INCLUDE_DIRS}")
     target_include_directories(${PROJECT_NAME}_lib PUBLIC "${PROJECT_SOURCE_DIR}/src" ${INCLUDE_DIRS})
+elseif(HEADER_FILES)
+    # Must set BUILD_ARTIFACT_TYPE to "Header-Only"
+    add_library(${PROJECT_NAME}_lib INTERFACE ${HEADER_FILES})
+    if(PCH)
+        target_precompile_headers(${PROJECT_NAME}_lib INTERFACE ${PCH})
+    endif()
+    target_link_libraries(
+        ${PROJECT_NAME}_lib
+        INTERFACE ${PROJECT_NAME}_settings
+        )
+
+    list(TRANSFORM INCLUDE_DIRS PREPEND "${PROJECT_SOURCE_DIR}/src/")
+    message("${INCLUDE_DIRS}")
+    target_include_directories(${PROJECT_NAME}_lib INTERFACE "${PROJECT_SOURCE_DIR}/src" ${INCLUDE_DIRS})
 else()
     message(FATAL_ERROR "Tried to create target without specifying any source or header files???")
 endif()
@@ -62,6 +76,10 @@ elseif(${BUILD_ARTIFACT_TYPE} STREQUAL "Shared")
 elseif(${BUILD_ARTIFACT_TYPE} STREQUAL "Static")
     add_library(${PROJECT_NAME} STATIC)
     target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_NAME}_lib)
+
+elseif(${BUILD_ARTIFACT_TYPE} STREQUAL "Header-Only")
+    add_library(${PROJECT_NAME} INTERFACE)
+    target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}_lib)
 
 else()
     message(FATAL_ERROR "Tried to build project without known BUILD_ARTIFACT_TYPE")
