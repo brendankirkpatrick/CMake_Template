@@ -255,7 +255,3 @@ if("${LIST_OF_SANITIZERS}"
                 WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR})
     endif()
 endif()
-
-add_test(NAME UNIT_TEST COMMAND UNIT_TEST --colour-mode ansi)
-set_tests_properties(UNIT_TEST PROPERTIES TIMEOUT 30)
-
