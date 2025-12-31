@@ -36,25 +36,33 @@ if(SOURCE_FILES)
     message("${INCLUDE_DIRS}")
     target_include_directories(${PROJECT_NAME}_lib PUBLIC "${PROJECT_SOURCE_DIR}/src" ${INCLUDE_DIRS})
 elseif(HEADER_FILES)
-    # Must set BUILD_ARTIFACT_TYPE to "Header-Only"
-    add_library(${PROJECT_NAME}_lib INTERFACE ${HEADER_FILES})
+    add_library(${PROJECT_NAME}_lib OBJECT EXCLUDE_FROM_ALL ${HEADER_FILES})
+
+    set(HEADER_ONLY_LINKER_LANGUAGE "CXX" CACHE STRING "Set the linker language for header-only tooling target")
+    set_property(CACHE HEADER_ONLY_LINKER_LANGUAGE PROPERTY STRINGS C CXX)
+    set_target_properties(${PROJECT_NAME}_lib PROPERTIES LINKER_LANGUAGE ${HEADER_ONLY_LINKER_LANGUAGE})
+
     if(PCH)
-        target_precompile_headers(${PROJECT_NAME}_lib INTERFACE ${PCH})
+        target_precompile_headers(${PROJECT_NAME}_lib PRIVATE ${PCH})
     endif()
     target_link_libraries(
         ${PROJECT_NAME}_lib
-        INTERFACE ${PROJECT_NAME}_settings
+        PRIVATE ${PROJECT_NAME}_settings
         )
 
     list(TRANSFORM INCLUDE_DIRS PREPEND "${PROJECT_SOURCE_DIR}/src/")
     message("${INCLUDE_DIRS}")
-    target_include_directories(${PROJECT_NAME}_lib INTERFACE "${PROJECT_SOURCE_DIR}/src" ${INCLUDE_DIRS})
+    target_include_directories(${PROJECT_NAME}_lib PRIVATE "${PROJECT_SOURCE_DIR}/src" ${INCLUDE_DIRS})
 else()
     message(FATAL_ERROR "Tried to create target without specifying any source or header files???")
 endif()
 
 if(${BUILD_ARTIFACT_TYPE} STREQUAL "Executable")
-    add_executable(${PROJECT_NAME} ${MAIN} $<TARGET_OBJECTS:${PROJECT_NAME}_lib>)
+    if(SOURCE_FILES)
+        add_executable(${PROJECT_NAME} ${MAIN} $<TARGET_OBJECTS:${PROJECT_NAME}_lib>)
+    else()
+        add_executable(${PROJECT_NAME} ${MAIN})
+    endif()
     target_link_libraries(
         ${PROJECT_NAME}
         PRIVATE ${PROJECT_NAME}_settings
@@ -86,7 +94,7 @@ else()
 endif()
 
 # If we define a main fn for testing purposes, add our library to it
-if(MAIN AND (${BUILD_ARTIFACT_TYPE} STREQUAL "Static" OR ${BUILD_ARTIFACT_TYPE} STREQUAL "Shared"))
+if(MAIN AND NOT BUILD_ARTIFACT_TYPE STREQUAL "Executable")
     add_executable(${PROJECT_NAME}_libtest ${MAIN})
     target_link_libraries(
         ${PROJECT_NAME}_libtest
