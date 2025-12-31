@@ -4,17 +4,40 @@ set(HEADER_FILES
 
 # Source files
 set(SOURCE_FILES
-    test.cpp
     )
+
+# Detect files for above types, doesn't compile pch or main.ccp files
+detect_files(${CMAKE_CURRENT_SOURCE_DIR})
 
 # Fetch Content to include Catch2 testing
 Include(FetchContent)
+
+# Pre-configure Catch2 to be quiet
+set(BUILD_TESTING ON CACHE INTERNAL "")
+set(CATCH_BUILD_TESTING OFF CACHE INTERNAL "")
+set(CATCH_INSTALL_DOCS ON CACHE INTERNAL "")
+set(CATCH_INSTALL_EXTRAS ON CACHE INTERNAL "")
+set(CATCH_DEVELOPMENT_BUILD OFF CACHE INTERNAL "")
+set(CATCH_ENABLE_REPRODUCIBLE_BUILD ON CACHE INTERNAL "")
+
 FetchContent_Declare(
   Catch2
   GIT_REPOSITORY https://github.com/catchorg/Catch2.git
   GIT_TAG        v3.8.0 # or a later release
 )
 FetchContent_MakeAvailable(Catch2)
+
+# Hide remaining FetchContent variables
+mark_as_advanced(
+    FETCHCONTENT_BASE_DIR
+    FETCHCONTENT_QUIET
+    FETCHCONTENT_SOURCE_DIR_CATCH2
+    FETCHCONTENT_BINARY_DIR_CATCH2
+    FETCHCONTENT_UPDATES_DISCONNECTED
+    FETCHCONTENT_UPDATES_DISCONNECTED_CATCH2
+    FETCHCONTENT_BASE_DIR
+    FETCHCONTENT_FULLY_DISCONNECTED
+)
 
 add_executable(UNIT_TEST ${SOURCE_FILES} ${HEADER_FILES})
 

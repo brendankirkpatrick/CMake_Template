@@ -8,97 +8,21 @@ set(SOURCE_FILES
     example.cpp
     )
 
-# Main function (must be set for unit tests to work properly)
+# Main function (auto detect main.cpp)
 set(MAIN main.cpp)
 
-# Set PCH if you have one
-set(PCH)
+# Set pre-compiled-header (auto detect pch.h)
+set(PCH
+)
 
-# Set subdirectories to include. Allows files to directly include
-# headers without specifying the full subdirectory path
+# Set subdirectories to include
+# Allows files to directly include headers without specifying the full subdirectory path
 set(INCLUDE_DIRS
 )
 
-################################################################################
+# (OPTIONAL) In the current directory, detect all files for variables set above
+# Removes duplicate files
+detect_files(${CMAKE_CURRENT_SOURCE_DIR})
 
-# Add source files as library
-if(SOURCE_FILES)
-    add_library(${PROJECT_NAME}_lib OBJECT ${SOURCE_FILES} ${HEADER_FILES})
-    if(PCH)
-        target_precompile_headers(${PROJECT_NAME}_lib PUBLIC ${PCH})
-    endif()
-    target_link_libraries(
-        ${PROJECT_NAME}_lib
-        PRIVATE ${PROJECT_NAME}_settings
-        )
-
-    list(TRANSFORM INCLUDE_DIRS PREPEND "${PROJECT_SOURCE_DIR}/src/")
-    message("${INCLUDE_DIRS}")
-    target_include_directories(${PROJECT_NAME}_lib PUBLIC "${PROJECT_SOURCE_DIR}/src" ${INCLUDE_DIRS})
-elseif(HEADER_FILES)
-    add_library(${PROJECT_NAME}_lib OBJECT EXCLUDE_FROM_ALL ${HEADER_FILES})
-
-    set(HEADER_ONLY_LINKER_LANGUAGE "CXX" CACHE STRING "Set the linker language for header-only tooling target")
-    set_property(CACHE HEADER_ONLY_LINKER_LANGUAGE PROPERTY STRINGS C CXX)
-    set_target_properties(${PROJECT_NAME}_lib PROPERTIES LINKER_LANGUAGE ${HEADER_ONLY_LINKER_LANGUAGE})
-
-    if(PCH)
-        target_precompile_headers(${PROJECT_NAME}_lib PRIVATE ${PCH})
-    endif()
-    target_link_libraries(
-        ${PROJECT_NAME}_lib
-        PRIVATE ${PROJECT_NAME}_settings
-        )
-
-    list(TRANSFORM INCLUDE_DIRS PREPEND "${PROJECT_SOURCE_DIR}/src/")
-    message("${INCLUDE_DIRS}")
-    target_include_directories(${PROJECT_NAME}_lib PRIVATE "${PROJECT_SOURCE_DIR}/src" ${INCLUDE_DIRS})
-else()
-    message(FATAL_ERROR "Tried to create target without specifying any source or header files???")
-endif()
-
-if(${BUILD_ARTIFACT_TYPE} STREQUAL "Executable")
-    if(SOURCE_FILES)
-        add_executable(${PROJECT_NAME} ${MAIN} $<TARGET_OBJECTS:${PROJECT_NAME}_lib>)
-    else()
-        add_executable(${PROJECT_NAME} ${MAIN})
-    endif()
-    target_link_libraries(
-        ${PROJECT_NAME}
-        PRIVATE ${PROJECT_NAME}_settings
-        ${PROJECT_NAME}_lib
-        )
-
-    # Enable PIE
-    if(${POSITION_INDEPENDENT_EXECUTABLE})
-        include(CheckPIESupported)
-        check_pie_supported()
-        set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
-    endif()
-
-elseif(${BUILD_ARTIFACT_TYPE} STREQUAL "Shared")
-    add_library(${PROJECT_NAME} SHARED)
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_NAME}_lib)
-    set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
-
-elseif(${BUILD_ARTIFACT_TYPE} STREQUAL "Static")
-    add_library(${PROJECT_NAME} STATIC)
-    target_link_libraries(${PROJECT_NAME} PUBLIC ${PROJECT_NAME}_lib)
-
-elseif(${BUILD_ARTIFACT_TYPE} STREQUAL "Header-Only")
-    add_library(${PROJECT_NAME} INTERFACE)
-    target_link_libraries(${PROJECT_NAME} INTERFACE ${PROJECT_NAME}_lib)
-
-else()
-    message(FATAL_ERROR "Tried to build project without known BUILD_ARTIFACT_TYPE")
-endif()
-
-# If we define a main fn for testing purposes, add our library to it
-if(MAIN AND NOT BUILD_ARTIFACT_TYPE STREQUAL "Executable")
-    add_executable(${PROJECT_NAME}_libtest ${MAIN})
-    target_link_libraries(
-        ${PROJECT_NAME}_libtest
-        PRIVATE ${PROJECT_NAME}_settings
-        ${PROJECT_NAME}
-        )
-endif()
+# Include library/executable creation given above options
+include(../cmake/CompileBuildTypes.cmake)
