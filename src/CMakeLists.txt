@@ -1,15 +1,13 @@
 # Header files
 set(HEADER_FILES
-    example.h
     )
 
 # Source Files
 set(SOURCE_FILES
-    example.cpp
     )
 
 # Main function (auto detect main.cpp)
-set(MAIN main.cpp)
+set(MAIN)
 
 # Set pre-compiled-header (auto detect pch.h)
 set(PCH
