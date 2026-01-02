@@ -11,7 +11,7 @@ option(ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
 option(ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
 
 # Enable position independent code
-option(POSITION_INDEPENDENT_CODE "Treat Warnings As Errors" OFF)
+option(POSITION_INDEPENDENT "Set position independent code" ON)
 
 # Set the possible values of build type for cmake-gui, ccmake
 set(BUILD_TYPE
@@ -25,11 +25,11 @@ set_property(
      "Shared"
      "Header-Only")
 
-set(RELEASE_TYPE
+set(CMAKE_BUILD_TYPE
       "Debug"
       CACHE STRING "Choose the type of build.")
 set_property(
-    CACHE RELEASE_TYPE
+    CACHE CMAKE_BUILD_TYPE
     PROPERTY STRINGS
      "Debug"
      "Release"

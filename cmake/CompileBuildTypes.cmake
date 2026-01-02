@@ -55,10 +55,12 @@ if(${BUILD_TYPE} STREQUAL "Executable")
     enable_clang_tidy(${PROJECT_NAME})
 
     # Enable PIE
-    if(${POSITION_INDEPENDENT_EXECUTABLE})
+    if(POSITION_INDEPENDENT)
         include(CheckPIESupported)
         check_pie_supported()
         set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
+    else()
+        set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE OFF)
     endif()
 
 elseif(${BUILD_TYPE} STREQUAL "Shared")
