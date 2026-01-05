@@ -37,6 +37,8 @@ elseif(HEADER_FILES)
     target_include_directories(${PROJECT_NAME}_lib INTERFACE "${PROJECT_SOURCE_DIR}/src" ${INCLUDE_DIRS})
 
     enable_clang_tidy(${PROJECT_NAME}_lib)
+elseif(DEFINED MAIN)
+    add_library(${PROJECT_NAME}_lib INTERFACE)
 else()
     message(FATAL_ERROR "Tried to create target without specifying any source or header files???")
 endif()
