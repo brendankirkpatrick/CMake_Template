@@ -14,7 +14,7 @@ function(enable_clang_tidy target)
             --extra-arg=-Wno-unused-command-line-argument
        )
         # Set warnings as errors
-        if(${WARNINGS_AS_ERRORS})
+        if(${PROJ_NAME}_WARNINGS_AS_ERRORS)
             list(APPEND CLANG_TIDY_OPTIONS -warnings-as-errors=*)
         endif()
 

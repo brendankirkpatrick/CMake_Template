@@ -1,18 +1,18 @@
 # Enable sanitizers
 set(SANITIZERS "")
-if(${ENABLE_SANITIZER_ADDRESS})
+if(${PROJ_NAME}_ENABLE_SANITIZER_ADDRESS)
     list(APPEND SANITIZERS "address")
 endif()
 
-if(${ENABLE_SANITIZER_LEAK})
+if(${PROJ_NAME}_ENABLE_SANITIZER_LEAK)
     list(APPEND SANITIZERS "leak")
 endif()
 
-if(${ENABLE_SANITIZER_UNDEFINED_BEHAVIOR})
+if(${PROJ_NAME}_ENABLE_SANITIZER_UNDEFINED_BEHAVIOR)
     list(APPEND SANITIZERS "undefined")
 endif()
 
-if(${ENABLE_SANITIZER_THREAD})
+if(${PROJ_NAME}_ENABLE_SANITIZER_THREAD)
     if("address" IN_LIST SANITIZERS OR "leak" IN_LIST SANITIZERS)
         message(WARNING "Thread sanitizer does not work with Address and Leak sanitizer enabled")
     else()
@@ -20,7 +20,7 @@ if(${ENABLE_SANITIZER_THREAD})
     endif()
 endif()
 
-if(${ENABLE_SANITIZER_MEMORY} AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
+if(${PROJ_NAME}_ENABLE_SANITIZER_MEMORY AND CMAKE_CXX_COMPILER_ID MATCHES ".*Clang")
     message(
     WARNING
       "Memory sanitizer requires all the code (including libc++) to be MSan-instrumented otherwise it reports false positives"

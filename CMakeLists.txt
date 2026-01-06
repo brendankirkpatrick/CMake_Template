@@ -1,24 +1,27 @@
 cmake_minimum_required(VERSION 3.21)
 
+# Set project name to be equal to root level directory
+get_filename_component(PROJ_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+
 # Treat warnings as errors
-option(WARNINGS_AS_ERRORS "Treat Warnings As Errors" ON)
+option(${PROJ_NAME}_WARNINGS_AS_ERRORS "Treat Warnings As Errors" ON)
 
 # Sanitizer options
-option(ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" ON)
-option(ENABLE_SANITIZER_LEAK "Enable leak sanitizer" ON)
-option(ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" ON)
-option(ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
-option(ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
+option(${PROJ_NAME}_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" ON)
+option(${PROJ_NAME}_ENABLE_SANITIZER_LEAK "Enable leak sanitizer" ON)
+option(${PROJ_NAME}_ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" ON)
+option(${PROJ_NAME}_ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
+option(${PROJ_NAME}_ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
 
 # Enable position independent code
-option(POSITION_INDEPENDENT "Set position independent code" ON)
+option(${PROJ_NAME}_POSITION_INDEPENDENT "Set position independent code" ON)
 
 # Set the possible values of build type for cmake-gui, ccmake
-set(BUILD_TYPE
+set(${PROJ_NAME}_BUILD_TYPE
     "Executable"
     CACHE STRING "Choose the type of build.")
 set_property(
-    CACHE BUILD_TYPE
+    CACHE ${PROJ_NAME}_BUILD_TYPE
     PROPERTY STRINGS
      "Executable"
      "Static"
@@ -36,8 +39,6 @@ set_property(
      "MinSizeRel"
      "RelWithDebInfo")
 
-# Set project name to be equal to root level directory
-get_filename_component(PROJ_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 project(
   ${PROJ_NAME}
   VERSION 1.0.0
