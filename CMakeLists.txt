@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 3.21)
 
-# Set project name to be equal to root level directory
-get_filename_component(PROJ_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+# Set project name to be equal to root level directory if not directly set
+set(PROJ_NAME )
+if(NOT PROJ_NAME)
+    get_filename_component(PROJ_NAME ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+endif()
 
 # Treat warnings as errors
 option(${PROJ_NAME}_WARNINGS_AS_ERRORS "Treat Warnings As Errors" ON)

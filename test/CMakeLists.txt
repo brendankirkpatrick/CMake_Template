@@ -39,27 +39,27 @@ mark_as_advanced(
     FETCHCONTENT_FULLY_DISCONNECTED
 )
 
-add_executable(UNIT_TEST ${SOURCE_FILES} ${HEADER_FILES})
+add_executable(${PROJECT_NAME}_UNIT_TEST ${SOURCE_FILES} ${HEADER_FILES})
 
 # Discover unit tests automagically
 include(Catch)
-catch_discover_tests(UNIT_TEST EXTRA_ARGS --colour-mode ansi)
+catch_discover_tests(${PROJECT_NAME}_UNIT_TEST EXTRA_ARGS --colour-mode ansi)
 
 # Unit test output bin in build directory
-set_target_properties(UNIT_TEST PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+set_target_properties(${PROJECT_NAME}_UNIT_TEST PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 
 if(TARGET ${PROJECT_NAME})
     get_target_property(TYPE_VAR ${PROJECT_NAME} TYPE)
     if(TYPE_VAR STREQUAL "EXECUTABLE")
         target_link_libraries(
-            UNIT_TEST
+            ${PROJECT_NAME}_UNIT_TEST
             PRIVATE ${PROJECT_NAME}_settings
             Catch2::Catch2WithMain
             ${PROJECT_NAME}_lib
         )
     else()
         target_link_libraries(
-            UNIT_TEST
+            ${PROJECT_NAME}_UNIT_TEST
             PRIVATE ${PROJECT_NAME}_settings
             Catch2::Catch2WithMain
             ${PROJECT_NAME}
