@@ -7,17 +7,20 @@ if(NOT PROJ_NAME)
 endif()
 
 # Treat warnings as errors
-option(${PROJ_NAME}_WARNINGS_AS_ERRORS "Treat Warnings As Errors" ON)
+option(${PROJ_NAME}_WARNINGS_AS_ERRORS "Treat Warnings as Errors" ON)
+
+# Build unit-tests
+option(${PROJ_NAME}_BUILD_UNIT_TESTS "Build Unit Tests" ON)
 
 # Sanitizer options
-option(${PROJ_NAME}_ENABLE_SANITIZER_ADDRESS "Enable address sanitizer" ON)
-option(${PROJ_NAME}_ENABLE_SANITIZER_LEAK "Enable leak sanitizer" ON)
-option(${PROJ_NAME}_ENABLE_SANITIZER_UNDEFINED "Enable undefined sanitizer" ON)
-option(${PROJ_NAME}_ENABLE_SANITIZER_THREAD "Enable thread sanitizer" OFF)
-option(${PROJ_NAME}_ENABLE_SANITIZER_MEMORY "Enable memory sanitizer" OFF)
+option(${PROJ_NAME}_ENABLE_SANITIZER_ADDRESS "Enable Address Sanitizer" ON)
+option(${PROJ_NAME}_ENABLE_SANITIZER_LEAK "Enable Leak Sanitizer" ON)
+option(${PROJ_NAME}_ENABLE_SANITIZER_UNDEFINED "Enable Undefined Sanitizer" ON)
+option(${PROJ_NAME}_ENABLE_SANITIZER_THREAD "Enable Thread Sanitizer" OFF)
+option(${PROJ_NAME}_ENABLE_SANITIZER_MEMORY "Enable Memory Sanitizer" OFF)
 
 # Enable position independent code
-option(${PROJ_NAME}_POSITION_INDEPENDENT "Set position independent code" ON)
+option(${PROJ_NAME}_POSITION_INDEPENDENT "Set Position Independent Code" ON)
 
 # Set the possible values of build type for cmake-gui, ccmake
 set(${PROJ_NAME}_BUILD_TYPE
