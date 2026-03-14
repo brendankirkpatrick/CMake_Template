@@ -21,7 +21,7 @@ elseif(HEADER_FILES)
         set_target_properties(${PROJECT_NAME}_lib PROPERTIES LINKER_LANGUAGE ${MAIN_LANG})
     else()
         set(${PROJ_NAME}_HEADER_ONLY_LINK_LANG "CXX" CACHE STRING "Set the linker language for header-only tooling target")
-        set_property(CACHE HEADER_ONLY_LINK_LANG PROPERTY STRINGS C CXX)
+        #set_property(CACHE HEADER_ONLY_LINK_LANG PROPERTY STRINGS C CXX)
         set_target_properties(${PROJECT_NAME}_lib PROPERTIES LINKER_LANGUAGE ${PROJ_NAME}_HEADER_ONLY_LINK_LANG)
     endif()
 
